@@ -40,13 +40,16 @@ The sub-model only lives for one query and doesn't have any memory. The primary 
 
 ```mermaid
 graph TD
-    A[Primary Model (Context Keeper)]
-    B[Sub-Model 1 (Task Executor)]
-    C[Sub-Model 2 (Task Executor)]
-    D[Sub-Model 3 (Task Executor)]
-    A --> B
-    A --> C
-    A --> D
+    A(User) <--> B(Primary Model); I[Database] --> F
+    B <--> C(Sub-Model 1)
+    B <--> D(Sub-Model 2)
+    B <--> E(Sub-Model 3)
+    C <--> F(Sub Database 1)
+    D <--> G(Sub Database 2)
+    E <--> H(Sub Database 3)
+    I --> G
+    I --> H
+    B --> I
 ```
 
 1. **Primary Model (Context Keeper)**

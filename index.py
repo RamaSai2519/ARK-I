@@ -67,7 +67,6 @@ class ARK:
         errors = 0
         while True:
             try:
-                print(f'Prompt: {self.message_history[-1]['content']}')
                 response = client.chat.completions.create(
                     model='gpt-4-turbo', messages=self.message_history, tools=tools)
                 tool_calls = response.choices[0].message.tool_calls
@@ -100,7 +99,6 @@ class ARK:
         return assistant_response
 
     def check_to_serve(self) -> bool:
-        return True
         doc = self.histories_collection.find_one(self.query)
         if doc['status'] == 'inprogress':
             return False

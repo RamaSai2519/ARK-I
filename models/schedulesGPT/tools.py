@@ -17,7 +17,7 @@ class SchedulesTools:
 
     def get_tools(self) -> list:
         return [
-            pydantic_function_tool(CancelSchedule)
+            pydantic_function_tool(CancelSchedule, description='Pass the _id of the schedule to cancel it')
         ]
 
     def handle_function_call(self, function_name: str, arguments: str) -> str:
@@ -25,11 +25,11 @@ class SchedulesTools:
             f'Function name: {function_name}, Arguments: {arguments}'
         )
         function_map = {
-            'CancelSchedule': lambda args: self.cancel_schedule(args.get('_id'))
+            'CancelSchedule': lambda args: self.cancel_schedule(args.get('schedule_id'))
         }
 
         arguments = json.loads(arguments) if arguments else {}
         response = function_map[function_name](
             arguments) if function_name in function_map else {}
         print(f'Response: {response}')
-        return response
+        return json.dumps(response)

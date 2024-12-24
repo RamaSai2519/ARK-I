@@ -18,7 +18,7 @@ class ExpertsTools:
         response = requests.get(url, params=params)
         output = Output(**response.json())
         data = output.output_details
-        return json.dumps(data)
+        return data
 
     def get_sarathi_schedules(self, expert_name: str) -> str:
         url = config.URL + '/actions/schedules'
@@ -29,7 +29,7 @@ class ExpertsTools:
         data = output.output_details.get('data')
         if not data:
             return "No upcoming schedules found"
-        return json.dumps(data)
+        return data
 
     def get_tools(self) -> list:
         return [
@@ -52,4 +52,4 @@ class ExpertsTools:
         response = function_map[function_name](
             arguments) if function_name in function_map else {}
         print(f'Response: {response}')
-        return response
+        return json.dumps(response)

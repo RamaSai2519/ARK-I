@@ -12,31 +12,6 @@ class ExpertsTools:
     def __init__(self) -> None:
         pass
 
-    def format_experts(self, data: list[dict]) -> str:
-        experts = []
-        for expert in data:
-            expert = Common.clean_dict(expert, Expert)
-            expert = Expert(**expert)
-            expert_dict = {
-                '_id': expert._id,
-                'name': expert.name,
-                'status': expert.status,
-                'active': expert.active,
-                'description': expert.description,
-                'persona': expert.persona
-            }
-            if expert.persona:
-                expert_dict['persona'] = expert.persona
-            experts.append(expert_dict)
-        return experts
-
-    def get_available_experts_for_recommendation(self) -> str:
-        experts_helper = ExpertsHelper()
-        query = {'status': 'online'}
-        data = experts_helper.get_experts(query=query, persona=True)
-        experts = self.format_experts(data)
-        return json.dumps(experts)
-
     def get_timings(self, expert_id: str) -> str:
         url = config.URL + '/actions/timings'
         params = {'expert': expert_id}
@@ -58,9 +33,10 @@ class ExpertsTools:
 
     def get_tools(self) -> list:
         return [
-            pydantic_function_tool(GetTimings),
-            pydantic_function_tool(GetSarathiSchedules),
-            pydantic_function_tool(GetAvailableExpertsForRecommendation)
+            pydantic_function_tool(GetTimings,
+                                   description='Gets the availability timings of a sarathi in IST'),
+            pydantic_function_tool(GetSarathiSchedules,
+                                   description='Gets the upcoming schedules of a sarathi with UTC job_time'),
         ]
 
     def handle_function_call(self, function_name: str, arguments: str) -> str:
@@ -70,7 +46,6 @@ class ExpertsTools:
         function_map = {
             'GetTimings': lambda args: self.get_timings(args.get('expertId')),
             'GetSarathiSchedules': lambda args: self.get_sarathi_schedules(args.get('expertName')),
-            'GetAvailableExpertsForRecommendation': lambda args: self.get_available_experts_for_recommendation()
         }
 
         arguments = json.loads(arguments) if arguments else {}

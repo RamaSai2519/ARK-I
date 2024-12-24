@@ -7,7 +7,3 @@ class GetTimings(BaseModel):
 
 class GetSarathiSchedules(BaseModel):
     expertName: str
-
-
-class GetAvailableExpertsForRecommendation(BaseModel):
-    pass

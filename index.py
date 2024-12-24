@@ -13,16 +13,16 @@ class ARK:
     def __init__(self, input: Input) -> None:
         self.input = input
         self.common = Common()
+        self.now_date = self.get_now_date()
         self.tooler = MainTools(self.input.phoneNumber)
         self.histories_collection = get_histories_collection()
 
-        self.now_date = self.get_now_date()
         self.query = self.prep_query()
         self.message_history, self.history_id, self.system_message = self.determine_history()
 
     def get_now_date(self) -> datetime:
         now_date = Common.get_current_utc_time()
-        now_date = now_date.strftime('%Y-%m-%d %H')
+        now_date = now_date.strftime('%Y-%m-%d')
         return now_date
 
     def prep_query(self) -> dict:
@@ -51,11 +51,14 @@ class ARK:
         update = {'$set': {'history': self.message_history, 'status': 'done'}}
         self.histories_collection.update_one({'_id': self.history_id}, update)
 
-    def truncate_history(self):
-        system_message = self.message_history[0]
-        truncated_history = [system_message]
-        self.message_history = truncated_history
-        self.update_history('user', self.input.prompt)
+    def truncate_history(self) -> None:
+        history = self.message_history
+        for message in history:
+            if message['role'] == 'tool':
+                history.remove(message)
+            elif message.get('tool_calls'):
+                history.remove(message)
+        self.message_history = history
 
     def get_gpt_response(self) -> str:
         client_obj = GPT_Client()
@@ -64,6 +67,7 @@ class ARK:
         errors = 0
         while True:
             try:
+                print(f'Prompt: {self.message_history[-1]['content']}')
                 response = client.chat.completions.create(
                     model='gpt-4-turbo', messages=self.message_history, tools=tools)
                 tool_calls = response.choices[0].message.tool_calls

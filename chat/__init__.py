@@ -26,8 +26,6 @@ class Chat:
         tools = self.model.tools() if self.model.tools else None
         errors = 0
 
-        print('Reached here')
-
         while True:
             try:
                 if tools:
@@ -61,8 +59,6 @@ class Chat:
                     return "Rate limit error. Please try again later."
                 time.sleep(5)
         assistant_response = response.choices[0].message.content
-
-        pprint(self.message_history)
         return assistant_response
 
     def compute(self) -> str:

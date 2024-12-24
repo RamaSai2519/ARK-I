@@ -2,6 +2,7 @@ from shared.helpers.openai import GPT_Client
 from shared.models.interfaces import Model
 from shared.models.common import Common
 from openai import RateLimitError
+from pprint import pprint
 import time
 
 
@@ -17,18 +18,24 @@ class Chat:
         return self.message_history
 
     def get_message_history(self) -> list[dict]:
-        return [{"role": "system", "content": self.model.prompt}]
+        return [{"role": "system", "content": self.model.prompt()}]
 
     def get_response(self) -> str:
         client_obj = GPT_Client()
         client = client_obj.get_gpt_client()
-        tools = self.model.tools
+        tools = self.model.tools() if self.model.tools else None
         errors = 0
+
+        print('Reached here')
 
         while True:
             try:
-                response = client.chat.completions.create(
-                    model='gpt-4-turbo', messages=self.message_history, tools=tools)
+                if tools:
+                    response = client.chat.completions.create(
+                        model='gpt-4-turbo', messages=self.message_history, tools=tools)
+                else:
+                    response = client.chat.completions.create(
+                        model='gpt-4-turbo', messages=self.message_history)
                 tool_calls = response.choices[0].message.tool_calls
                 if tool_calls:
                     self.message_history.append({
@@ -54,4 +61,11 @@ class Chat:
                     return "Rate limit error. Please try again later."
                 time.sleep(5)
         assistant_response = response.choices[0].message.content
+
+        pprint(self.message_history)
         return assistant_response
+
+    def compute(self) -> str:
+        self.update_history('user', self.prompt)
+
+        return self.get_response()

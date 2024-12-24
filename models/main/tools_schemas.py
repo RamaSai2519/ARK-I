@@ -18,8 +18,8 @@ class GetUserDetails(BaseModel):
 
 
 class ExpertsAssistant(BaseModel):
-    query: str
+    prompt: str
 
 
 class ServicesAssistant(BaseModel):
-    query: str
+    prompt: str

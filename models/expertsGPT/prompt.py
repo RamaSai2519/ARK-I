@@ -1,5 +1,7 @@
 from shared.db.experts import get_experts_collections
 from shared.models.interfaces import Output, Expert
+from shared.helpers.experts import ExpertsHelper
+from shared.helpers.users import UsersHelper
 from shared.configs import CONFIG as config
 from shared.models.common import Common
 import requests
@@ -7,28 +9,28 @@ import json
 
 
 class ExpertsPrompt:
-    def __init__(self):
+    def __init__(self, phoneNumber: str) -> None:
+        self.phoneNumber = phoneNumber
         self.experts_collections = get_experts_collections()
 
-    def get_experts(self) -> str:
-        url = config.URL + '/actions/expert'
-        response = requests.get(url)
-        if response.status_code != 200:
-            raise Exception("Failed to fetch experts")
-        response_json = Output(**response.json())
-        data = response_json.output_details
+    def get_all_experts(self) -> str:
+        experts_helper = ExpertsHelper()
+        data = experts_helper.get_experts()
         experts = []
         for expert in data:
             expert = Common.clean_dict(expert, Expert)
             expert = Expert(**expert)
-            experts.append({
+            expert_dict = {
                 '_id': expert._id,
                 'name': expert.name,
                 'status': expert.status,
+                'active': expert.active,
                 'phoneNumber': expert.phoneNumber,
                 'description': expert.description,
-            })
-        return json.dumps(experts)
+            }
+            experts.append(expert_dict)
+        experts = json.dumps(experts)
+        return experts
 
     def get_system_message(self) -> str:
         prompt = f"""
@@ -36,12 +38,12 @@ class ExpertsPrompt:
         Your task is to provide information about Sukoon Sarathis using specific functions for querying details.
 
         # Steps
-        - You will provided with a list of all available sarathis.
+        - You will be provided with a list of all available sarathis.
         - **Receive Query**: Understand the user's request for information about a particular sarathi.
         - **Query Functions**:
-        - Use `GetSarathiDetails` to retrieve details about the sarathi in question.
         - Use `GetTimings` to find the availability of the sarathi.
         - Use `GetSarathiSchedules` to check for upcoming calls or schedules.
+        - Use `GetAvailableExpertsForRecommendation` to get a list of all available sarathis and their detailed personas. Use this function when asked for a recommendation.
         - **Provide Information**:
         - Share the gathered information clearly with the user.
         - If the information isn't available, inform the user that they should contact support.
@@ -57,12 +59,19 @@ class ExpertsPrompt:
 
         - You are restricted to using only provided data and should not generate information independently.
         - If data isn't accessible, reiterate the contact information for the support team.
-        - Always ensure that the user's query is acknowledged, and actions to resolve or further assist are clearly outlined.
+        - If the user requests a recommendation, recommend a sarathi by comparing all available sarathis' personas with the user's persona. Make sure to provide a detailed explanation for the recommendation.
         """
 
         prompt += "Here are all the sarathis:\n"
-        experts = self.get_experts()
+        experts = self.get_all_experts()
         prompt += experts
+        prompt += "Here are the user details:\n"
+        user = UsersHelper().get_user(self.phoneNumber)
+        user = {
+            'name': user.get('name', ''),
+            'persona': user.get('customerPersona', '')
+        }
+        prompt += json.dumps(user)
         prompt = Common.strip_para(prompt)
 
         return prompt

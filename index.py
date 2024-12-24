@@ -96,6 +96,7 @@ class ARK:
         return assistant_response
 
     def check_to_serve(self) -> bool:
+        return True
         doc = self.histories_collection.find_one(self.query)
         if doc['status'] == 'inprogress':
             return False

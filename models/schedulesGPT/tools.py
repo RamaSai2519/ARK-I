@@ -25,7 +25,7 @@ class SchedulesTools:
             f'Function name: {function_name}, Arguments: {arguments}'
         )
         function_map = {
-            'GetTimings': lambda args: self.cancel_schedule(args.get('_id'))
+            'CancelSchedule': lambda args: self.cancel_schedule(args.get('_id'))
         }
 
         arguments = json.loads(arguments) if arguments else {}

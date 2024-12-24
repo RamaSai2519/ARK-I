@@ -27,6 +27,10 @@ class ServicesAssistant(BaseModel):
     prompt: str
 
 
+class SchedulesAssistant(BaseModel):
+    prompt: str
+
+
 class ConnectNow(BaseModel):
     user_id: str
     expert_id: str

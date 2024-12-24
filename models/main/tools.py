@@ -60,6 +60,7 @@ class MainTools:
         payload = {
             'status': status,
             'job_type': 'CALL',
+            'isDeleted': False,
             'initiatedBy': 'ARK',
             'user_requested': True,
             'user_id': arguments.get('user_id'),
@@ -97,6 +98,7 @@ class MainTools:
             pydantic_function_tool(GetCurrentTime),
             pydantic_function_tool(ExpertsAssistant),
             pydantic_function_tool(ServicesAssistant),
+            pydantic_function_tool(SchedulesAssistant),
             pydantic_function_tool(
                 UpdateUserDetails,
                 description=f"Make sure birthDate is in the format {TimeFormats.ANTD_TIME_FORMAT} and is in english only."),
@@ -114,6 +116,7 @@ class MainTools:
             "UpdateUserDetails": lambda args: self.update_user(args.get('user')),
             "ExpertsAssistant": lambda args: self.controller.invoke_sub_model('expert', args.get('prompt')),
             "ServicesAssistant": lambda args: self.controller.invoke_sub_model('sukoon', args.get('prompt')),
+            "SchedulesAssistant": lambda args: self.controller.invoke_sub_model('schedule', args.get('prompt')),
         }
 
         arguments = json.loads(arguments) if arguments else {}

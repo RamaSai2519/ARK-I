@@ -24,7 +24,6 @@ class ExpertsPrompt:
                 'name': expert.name,
                 'status': expert.status,
                 'persona': expert.persona,
-                'phoneNumber': expert.phoneNumber,
                 'description': expert.description
             }
             experts.append(expert_dict)

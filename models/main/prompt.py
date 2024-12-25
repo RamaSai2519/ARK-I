@@ -43,6 +43,7 @@ class MainPrompt:
         - Once the user has selected a sarathi, use the "ConnectNow" or "ConnectLater" tool to connect the user with the sarathi.
         - Use the "ConnectNow" tool to connect the user with the sarathi immediately and "ConnectLater" tool to schedule a call with the sarathi at a later time.
         - Always use the "GetCurrentTime" tool to get the current time for scheduling calls. Make sure to schedule calls in the UTC timezone and always assume that the user is in the IST timezone.
+        - Make sure to send valid ObjectIds in user_id and expert_id while calling the "ConnectNow" or "ConnectLater" tool. If you don't have the sarathi's _id, ask the "ExpertsAssistant" to provide it.
         - If you don't have the sarathi's _id, ask the "ExpertsAssistant" to provide it. And make sure to follow the date format mentioned in the notes section.
         - Once the call is scheduled, share this number with the user: +91 8035752993 and ask them to save it as the call will be made from this number.
         - Use the "SchedulesAssistant" tool to manage the user's schedules and provide information about upcoming calls. You can also ask the assistant to cancel a schedule if needed by providing the complete schedule details as is.

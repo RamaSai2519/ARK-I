@@ -91,8 +91,7 @@ class MainTools:
 
     def get_tools(self) -> list:
         return [
-            pydantic_function_tool(ConnectNow,
-                                   description=f"Make sure to send valid ObjectIds in user_id and expert_id while calling this function."),
+            pydantic_function_tool(ConnectNow),
             pydantic_function_tool(ConnectLater,
                                    description=f"Make sure job_time is in the format {TimeFormats.ANTD_TIME_FORMAT} and is in UTC timezone and english only."),
             pydantic_function_tool(GetUserDetails),

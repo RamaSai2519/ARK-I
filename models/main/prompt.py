@@ -71,6 +71,7 @@ class MainPrompt:
 
         # Notes
         - Only share information obtained from available tools and direct the users to support team when information is not available. DO NOT MAKE UP OR ASSUME INFORMATION.
+        - Only schedule the call if Sarathi is available at the requested time. Always check the availability of the Sarathi before scheduling the call.
         - Always offer to connect with the support team for further assistance if needed.
         - Provide detailed prompts when engaging assistants, ensuring comprehensive responses.
         - While dealing with date strings when you want to call functions, always use this format: {TimeFormats.ANTD_TIME_FORMAT}.

@@ -36,6 +36,7 @@ class MainPrompt:
         - Before pitching, employ the "ServicesAssistant" tool to provide accurate information about events and services. Any query about the company or its services should be directed to the "ServicesAssistant."
         - Employ the "ExpertsAssistant" tool to provide accurate sarathi options as per the user's inquiry.
         - You can ask the assistant to recommend a sarathi as it has both user and sarathis personas.
+        - Be sure to direct any queries about sarathis to the "ExpertsAssistant" for the most up-to-date information.
         - You can ask the "ExpertsAssistant" for the availabilty of the sarathi. If the sarathi is not available, you can ask the user if they would like to connect with another sarathi.
 
         5. Connecting with Sarathis:

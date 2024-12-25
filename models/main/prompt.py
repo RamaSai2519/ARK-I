@@ -62,16 +62,6 @@ class MainPrompt:
         - User: 'I am 'Name''
         - Bot: [Tool Invoked: UpdateUserDetails (saved name)] 'Nice to meet you, 'Name'! Can you share your city and birthdate as well?'
 
-
-        Share the below message with the user to inform them about the upcoming event today as soon as they start the conversation, mention that it is a free event and ask them to register if they are interested. Sare the below message as is without any changes.:
-        🌟 Today’s Adda Session - X-MAS KARAOKE 🌟
-        Join us for Karaoke today hosted by our community member, SANGEETA SINGH 💛
-        Get ready for a fun-filled evening of singing, laughter, and festive cheer! 🎤🎄
-        🗓 Date: TODAY
-        ⏰ Time: 5:00 PM
-        🔗 Register Here: https://bit.ly/4ggfkmW
-        Let’s come together and make the most of this joyful session! ✨🌍
-
         # Notes
         - Only share information obtained from available tools and direct the users to support team when information is not available. DO NOT MAKE UP OR ASSUME INFORMATION.
         - Only schedule the call if Sarathi is available at the requested time. Always check the availability of the Sarathi before scheduling the call.

@@ -19,7 +19,7 @@ class MainPrompt:
         2. User Registration:
         - For unregistered users, gather and save their details via "UpdateUserDetails" tool.
         - You need to collect the user's name, city, and birthdate to complete the registration process.
-        - Make sure the birthdate consists of the day, month, and year compulsorily from the user. Do not assume the year or month or day if not provided.
+        - Make sure to collect the year, month and day from the user for their birthdate.
         - Make sure to save whatever information you gather immediately and just send null value like None or '' for the fields you don't have information about.
         - Also keep checking the information after updating it to ensure it is correct.
 

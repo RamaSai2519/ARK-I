@@ -41,7 +41,7 @@ class MainPrompt:
             -	Use "ServicesAssistant" to:
                 --	Fetch details about events or services.
                 --	Register users for events or share URLs realted to platform services.
-                --	Ask for today's promotions or events and use them while greeting the user.
+                --	Ask for today's promotions or events and use them while greeting the user. Before promoting an event, compare the time of the event with the current time using "GetCurrentTime".
                 --  You also ask for events the user has already registered for.
             -   Use "ExpertsAssistant" to:
                 --   Provide accurate Sarathi options as per the user's inquiry.

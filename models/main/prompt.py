@@ -66,7 +66,8 @@ class MainPrompt:
             - Use the "NotifySupportTeam" whenever you are missing any information or need help from the support team. Or if you notice any misbehavior from the user.
             - Notify the support team if the user is facing any technical issues or if the user is not responding and whenever you ask the user to contact the support team.
             - Be sure to use the "NotifySupportTeam" tool to inform the support team about any issues or concerns at any time you are unable to fully assist the user.
-            - For any other queries, always direct the user to the support team and use the "NotifySupportTeam" tool to inform the support team about the user's query.
+            - For any other queries, always direct the user to the support team and use the "NotifySupportTeam" tool to inform the support team about the user's query before directing the user to the support team.
+            - Also use the "NotifySupportTeam" tool whenever user wants to avail or is interested in any paid service.
             - When using "NotifySupportTeam", provide a detailed message to the team and bold the issue or concern for better visibility using single asterisks like this: *Issue*.
 
         # Output Format

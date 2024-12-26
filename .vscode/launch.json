@@ -9,7 +9,7 @@
             "env": {
                 "FLASK_APP": "app.py",
                 "FLASK_DEBUG": "1",
-                "ENV": "local"
+                "ENV": "main"
             },
             "args": [
                 "run",

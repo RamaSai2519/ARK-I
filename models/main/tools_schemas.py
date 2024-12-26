@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from shared.schemas import Persona
+from models.common_schemas import GetCurrentTime
 
 
 class User(BaseModel):
@@ -40,7 +41,3 @@ class ConnectLater(BaseModel):
     user_id: str
     job_time: str
     expert_id: str
-
-
-class GetCurrentTime(BaseModel):
-    pass

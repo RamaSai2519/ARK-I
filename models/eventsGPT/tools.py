@@ -6,24 +6,26 @@ from openai import pydantic_function_tool
 from shared.configs import CONFIG as config
 
 
-class SchedulesTools:
-    def __init__(self) -> None:
-        pass
-
-    def cancel_schedule(self, _id: str) -> dict:
-        url = config.URL + '/actions/schedules'
-        payload = {'_id': _id, 'isDeleted': True}
-        response = requests.post(url, json=payload)
-        return response.json()
+class EventsTools:
+    def __init__(self, phoneNumber: str) -> None:
+        self.phoneNumber = phoneNumber
 
     def get_current_time(self, arguments: dict = None) -> str:
         return CommonTools.get_current_time()
 
+    def get_users_events(self, arguments: dict = None) -> str:
+        url = config.URL + "/actions/list_event_users"
+        params = {
+            'filter_field': 'phoneNumber',
+            'filter_value': self.phoneNumber
+        }
+        response = requests.get(url, params=params)
+        return response.json()
+
     def get_tools(self) -> list:
         return [
-            pydantic_function_tool(
-                CancelSchedule, description='Pass the _id of the schedule to cancel it'),
-            pydantic_function_tool(GetCurrentTime)
+            pydantic_function_tool(GetCurrentTime),
+            pydantic_function_tool(GetUserRegisteredEvents)
         ]
 
     def handle_function_call(self, function_name: str, arguments: str) -> str:
@@ -31,8 +33,8 @@ class SchedulesTools:
             f'Function name: {function_name}, Arguments: {arguments}'
         )
         function_map = {
-            'GetCurrentTime': self.get_current_time,
-            'CancelSchedule': lambda args: self.cancel_schedule(args.get('schedule_id'))
+            "GetCurrentTime": self.get_current_time,
+            "GetUserRegisteredEvents": self.get_users_events
         }
 
         arguments = json.loads(arguments) if arguments else {}

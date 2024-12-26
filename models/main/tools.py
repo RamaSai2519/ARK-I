@@ -1,9 +1,9 @@
 import json
-import pytz
 import requests
 from .tools_schemas import *
+from datetime import datetime
+from models.common import CommonTools
 from shared.models.common import Common
-from datetime import datetime, timedelta
 from models.controller import Controller
 from openai import pydantic_function_tool
 from shared.configs import CONFIG as config
@@ -17,22 +17,7 @@ class MainTools:
         self.controller = Controller(self.phoneNumber)
 
     def get_user_details(self, arguments: dict = None) -> dict:
-        url = config.URL + '/actions/user'
-        params = {'phoneNumber': self.phoneNumber}
-        response = requests.get(url, params=params)
-        output = Output(**response.json())
-        user = output.output_details
-
-        data = {
-            '_id': user.get('_id', ''),
-            'name': user.get('name', ''),
-            'city': user.get('city', ''),
-            'persona': user.get('customerPersona', ''),
-        }
-        birthDate = user.get('birthDate')
-        if birthDate and isinstance(birthDate, datetime):
-            data['birthDate'] = birthDate.strftime('%Y-%m-%d')
-        return data
+        return CommonTools.get_user_details(self.phoneNumber)
 
     def update_user(self, user: dict) -> dict:
         url = config.URL + '/actions/user'
@@ -71,23 +56,7 @@ class MainTools:
         return response.json()
 
     def get_current_time(self, arguments: dict = None) -> str:
-        times = {
-            'TODAY_IST': datetime.now(pytz.timezone('Asia/Kolkata')),
-            'TODAY_UTC': datetime.now(pytz.utc),
-            'TOMORROW_IST': (datetime.now(pytz.timezone('Asia/Kolkata')) + timedelta(days=1)),
-            'TOMORROW_UTC': (datetime.now(pytz.utc) + timedelta(days=1)),
-        }
-        times = {key: value.strftime(TimeFormats.ANTD_TIME_FORMAT)
-                 for key, value in times.items()}
-        response = "Current IST Time: "
-        response += times['TODAY_IST']
-        response += "\nCurrent UTC Time: "
-        response += times['TODAY_UTC']
-        response += "\nTomorrow IST Time: "
-        response += times['TOMORROW_IST']
-        response += "\nTomorrow UTC Time: "
-        response += times['TOMORROW_UTC']
-        return response
+        return CommonTools.get_current_time()
 
     def get_tools(self) -> list:
         return [

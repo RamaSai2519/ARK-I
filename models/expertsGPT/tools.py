@@ -1,11 +1,10 @@
 import json
 import requests
 from .tools_schemas import *
-from shared.models.common import Common
+from models.common import CommonTools
 from openai import pydantic_function_tool
 from shared.configs import CONFIG as config
-from shared.helpers.experts import ExpertsHelper
-from shared.models.interfaces import Output, Expert
+from shared.models.interfaces import Output
 
 
 class ExpertsTools:
@@ -31,12 +30,16 @@ class ExpertsTools:
             return "No upcoming schedules found"
         return data
 
+    def get_current_time(self, arguments: dict = None) -> str:
+        return CommonTools.get_current_time()
+
     def get_tools(self) -> list:
         return [
             pydantic_function_tool(GetTimings,
                                    description='Gets the availability timings of a sarathi in IST'),
             pydantic_function_tool(GetSarathiSchedules,
                                    description='Gets the upcoming schedules of a sarathi with UTC job_time'),
+            pydantic_function_tool(GetCurrentTime)
         ]
 
     def handle_function_call(self, function_name: str, arguments: str) -> str:
@@ -44,6 +47,7 @@ class ExpertsTools:
             f'Function name: {function_name}, Arguments: {arguments}'
         )
         function_map = {
+            'GetCurrentTime': self.get_current_time,
             'GetTimings': lambda args: self.get_timings(args.get('expertId')),
             'GetSarathiSchedules': lambda args: self.get_sarathi_schedules(args.get('expertName')),
         }

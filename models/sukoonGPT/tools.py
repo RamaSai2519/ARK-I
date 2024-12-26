@@ -1,0 +1,54 @@
+import json
+import requests
+from .tools_schemas import *
+from openai import pydantic_function_tool
+from shared.configs import CONFIG as config
+from shared.db.users import get_user_collection
+from shared.db.events import get_events_collection
+
+
+class SukoonTools:
+    def __init__(self, phoneNumber: str, controller) -> None:
+        self.controller = controller
+        self.phone_number = phoneNumber
+        self.users_collection = get_user_collection()
+        self.events_collection = get_events_collection()
+
+    def get_user(self) -> dict:
+        query = {'phoneNumber': self.phone_number}
+        return self.users_collection.find_one(query)
+
+    def register_user_for_event(self, slug: str) -> dict:
+        user = self.get_user()
+        query = {'slug': slug}
+        event = self.events_collection.find_one(query)
+        if not event:
+            return {'error': 'Invalid event slug, ask the "EventsandMeetupsAssistant" tool for valid event slug.'}
+        if event.get('isPremiumUserOnly', False) == True and not user.get('isPaidUser', False) == True:
+            return {'error': 'This event is a paid event. Ask "EventsandMeetupsAssistant" for the registration link and direct the user to the link.'}
+        url = config.URL + '/actions/upsert_event_user'
+        payload = {'phoneNumber': self.phone_number, 'source': slug}
+        response = requests.post(url, json=payload)
+        return response.json()
+
+    def get_tools(self) -> list:
+        return [
+            pydantic_function_tool(EventsandMeetupsAssistant),
+            pydantic_function_tool(
+                RegisterUserForEvent, description="Register a user for an event by sending the two or three letter slug of the event.")
+        ]
+
+    def handle_function_call(self, function_name: str, arguments: str) -> str:
+        print(
+            f'Function name: {function_name}, Arguments: {arguments}'
+        )
+        function_map = {
+            'RegisterUserForEvent': lambda args: self.register_user_for_event(args.get('event_slug')),
+            'EventsandMeetupsAssistant': lambda args: self.controller.invoke_sub_model('event', args.get('prompt'))
+        }
+
+        arguments = json.loads(arguments) if arguments else {}
+        response = function_map[function_name](
+            arguments) if function_name in function_map else {}
+        print(f'Response: {response}')
+        return json.dumps(response)

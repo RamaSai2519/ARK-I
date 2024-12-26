@@ -1,5 +1,8 @@
 from chat import Chat
 from shared.models.interfaces import Model
+from models.eventsGPT.tools import EventsTools
+from models.sukoonGPT.tools import SukoonTools
+from models.eventsGPT.prompt import EventsPrompt
 from models.expertsGPT.tools import ExpertsTools
 from models.sukoonGPT.prompt import SukoonPrompt
 from models.expertsGPT.prompt import ExpertsPrompt
@@ -21,7 +24,14 @@ class Controller:
                 SchedulesTools().handle_function_call
             ),
             'sukoon': Model(
-                SukoonPrompt().get_system_message
+                SukoonPrompt().get_system_message,
+                SukoonTools(phoneNumber, self).get_tools,
+                SukoonTools(phoneNumber, self).handle_function_call
+            ),
+            'event': Model(
+                EventsPrompt(phoneNumber).get_system_message,
+                EventsTools(phoneNumber).get_tools,
+                EventsTools(phoneNumber).handle_function_call
             )
         }
 

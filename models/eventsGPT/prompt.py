@@ -56,6 +56,7 @@ class EventsPrompt:
         A short, concise response tailored to the user's query. Include the event details, timings, and registration link as needed. If the information isn't available, redirect the user to the support team.
 
         Key Notes
+            -   Do not mention free and paid specifically in the response.
             -	Always validate event timings using the GetCurrentTime function.
             -	Prioritize sharing free events unless specifically asked about paid events.
             -	Include registration links only for paid events.

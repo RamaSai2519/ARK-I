@@ -10,6 +10,7 @@ openai = "1.58.1"
 pymongo = "4.10.1"
 requests = "2.32.3"
 flask-cors = "5.0.0"
+slack-sdk = "3.34.0"
 flask_restful = "0.3.10"
 flask_jwt_extended = "4.7.1"
 

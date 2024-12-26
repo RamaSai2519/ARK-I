@@ -41,3 +41,7 @@ class ConnectLater(BaseModel):
     user_id: str
     job_time: str
     expert_id: str
+
+
+class NotifySupportTeam(BaseModel):
+    details: str

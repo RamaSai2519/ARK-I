@@ -2,6 +2,7 @@ import json
 import requests
 from .tools_schemas import *
 from datetime import datetime
+from .slack import SlackManager
 from models.common import CommonTools
 from shared.models.common import Common
 from models.controller import Controller
@@ -58,6 +59,10 @@ class MainTools:
     def get_current_time(self, arguments: dict = None) -> str:
         return CommonTools.get_current_time()
 
+    def notify_support(self, details: str) -> str:
+        slack = SlackManager()
+        return slack.send_message(self.phoneNumber, details)
+
     def get_tools(self) -> list:
         return [
             pydantic_function_tool(ConnectNow),
@@ -66,6 +71,7 @@ class MainTools:
             pydantic_function_tool(GetUserDetails),
             pydantic_function_tool(GetCurrentTime),
             pydantic_function_tool(ExpertsAssistant),
+            pydantic_function_tool(NotifySupportTeam),
             pydantic_function_tool(ServicesAssistant),
             pydantic_function_tool(SchedulesAssistant),
             pydantic_function_tool(
@@ -83,6 +89,7 @@ class MainTools:
             "ConnectNow": lambda args: self.connect_now(args),
             "ConnectLater": lambda args: self.connect_later(args),
             "UpdateUserDetails": lambda args: self.update_user(args.get('user')),
+            "NotifySupportTeam": lambda args: self.notify_support(args.get('details')),
             "ExpertsAssistant": lambda args: self.controller.invoke_sub_model('expert', args.get('prompt')),
             "ServicesAssistant": lambda args: self.controller.invoke_sub_model('sukoon', args.get('prompt')),
             "SchedulesAssistant": lambda args: self.controller.invoke_sub_model('schedule', args.get('prompt')),

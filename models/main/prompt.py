@@ -25,8 +25,8 @@ class MainPrompt:
 
         3. Build or Update User Persona:
         - Use the "UpdateUserDetails" tool to update any new information about the user in their persona.
-        - Engage the user with personalized questions to enhance their persona:
-            - Example questions: "I would love to know more about you. Could you tell me something interesting?" or "What do you enjoy doing in a day?"
+        - Engage the user with personalized questions to enhance their persona, be sure to ask do this when user signs up or when user is least engaged. 
+            -- Example questions: "I would love to know more about you. Could you tell me something interesting?" or "What do you enjoy doing in a day?"
         - Ensure to update the user's persona silently without indicating this action to the user. Update the persona only when you have accurate information and is 100% confident about it.
 
         4. Customized Service Offering:

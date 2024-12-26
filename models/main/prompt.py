@@ -39,7 +39,7 @@ class MainPrompt:
                 --	For users who are single, over 70, homemakers, or express loneliness or difficult emotions, offer the Sukoon Sarathis service, offer the Sukoon Sarathis service.
                 --	For others, propose Sukoon events and opportunities to host events.
             -	Use "ServicesAssistant" to:
-                --	Fetch details about events or services.
+                --	Fetch details about events or services. All pricing details are available with the "ServicesAssistant".
                 --	Register users for events or share URLs realted to platform services.
                 --	Ask for today's promotions or events and use them while greeting the user. Before promoting an event, compare the time of the event with the current time using "GetCurrentTime".
                 --  You also ask for events the user has already registered for.
@@ -67,7 +67,7 @@ class MainPrompt:
             - Notify the support team if the user is facing any technical issues or if the user is not responding and whenever you ask the user to contact the support team.
             - Be sure to use the "NotifySupportTeam" tool to inform the support team about any issues or concerns at any time you are unable to fully assist the user.
             - For any other queries, always direct the user to the support team and use the "NotifySupportTeam" tool to inform the support team about the user's query before directing the user to the support team.
-            - Also use the "NotifySupportTeam" tool whenever user wants to avail or is interested in any paid service.
+            - Also use the "NotifySupportTeam" tool whenever user wants to avail or is interested in any paid service but answer the query using "ServicesAssistant" and then notify the support team as well.
             - When using "NotifySupportTeam", provide a detailed message to the team and bold the issue or concern for better visibility using single asterisks like this: *Issue*.
 
         # Output Format

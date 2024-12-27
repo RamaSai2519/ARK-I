@@ -39,16 +39,17 @@ class ARK:
         default_history = [{"role": "system", "content": system_message}]
 
         insertion = self.histories_collection.insert_one(
-            {**self.query, 'history': default_history, 'status': 'started'})
+            {**self.query, 'history': default_history, 'status': 'started', 'createdDate': Common.get_current_utc_time()})
         return default_history, insertion.inserted_id, system_message
 
     def update_history(self, role: str, content: str) -> None:
         self.message_history.append(
-            {"role": role, "content": content, "timestamp": Common.get_current_utc_time().strftime('%Y-%m-%d %H:%M:%S')})
+            {"role": role, "content": content, "timestamp": Common.get_current_utc_time()})
         return self.message_history
 
     def save_history(self) -> None:
-        update = {'$set': {'history': self.message_history, 'status': 'done'}}
+        update = {'$set': {'history': self.message_history,
+                           'status': 'done', 'updatedAt': Common.get_current_utc_time()}}
         self.histories_collection.update_one({'_id': self.history_id}, update)
 
     def truncate_history(self) -> None:

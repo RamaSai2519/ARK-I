@@ -69,7 +69,7 @@ class ARK:
         while True:
             try:
                 response = client.chat.completions.create(
-                    model='gpt-4-turbo', messages=self.message_history, tools=tools)
+                    model='gpt-4-turbo', messages=Common.jsonify(self.message_history), tools=tools)
                 tool_calls = response.choices[0].message.tool_calls
                 if tool_calls:
                     self.message_history.append({
@@ -85,7 +85,7 @@ class ARK:
                         tool_response = self.tooler.handle_function_call(
                             function_name, arguments)
                         self.message_history.append(
-                            {'role': 'tool', 'content': tool_response, 'tool_call_id': tool_call.id, 'timestamp': Common.get_current_utc_time().strftime('%Y-%m-%d %H:%M:%S')})
+                            {'role': 'tool', 'content': tool_response, 'tool_call_id': tool_call.id, 'timestamp': Common.get_current_utc_time()})
                     continue
                 break
             except RateLimitError:

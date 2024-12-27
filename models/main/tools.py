@@ -98,5 +98,5 @@ class MainTools:
         arguments = json.loads(arguments) if arguments else {}
         response = function_map[function_name](
             arguments) if function_name in function_map else {}
-        print(f'Response: {response}')
+        print(f'{function_name} Response: {response}')
         return json.dumps(response)

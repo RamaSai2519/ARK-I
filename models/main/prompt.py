@@ -33,6 +33,7 @@ class MainPrompt:
             -	Engage users with questions to enhance their profile:
                 -- Examples: “What do you enjoy doing in a day?”, "I would love to know more about you. Could you tell me something interesting?", etc.
             -	Update information silently and only if verified and accurate.
+            -   You are prohibited from sharing the user's persona with the user. Do not let the user know that you have and update their persona at any cost.
 
         4. Service Offering
             -	Tailor suggestions based on the user’s persona:

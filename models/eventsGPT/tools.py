@@ -13,7 +13,7 @@ class EventsTools:
     def get_current_time(self, arguments: dict = None) -> str:
         return CommonTools.get_current_time()
 
-    def get_users_events(self, arguments: dict = None) -> str:
+    def get_users_events(self, arguments: dict = None) -> dict:
         url = config.URL + "/actions/list_event_users"
         params = {
             'filter_field': 'phoneNumber',
@@ -22,9 +22,16 @@ class EventsTools:
         response = requests.get(url, params=params)
         return response.json()
 
+    def get_event_details(self, source: str) -> dict:
+        url = config.URL + "/actions/list_events"
+        params = {'slug': source}
+        response = requests.get(url, params=params)
+        return response.json()
+
     def get_tools(self) -> list:
         return [
             pydantic_function_tool(GetCurrentTime),
+            pydantic_function_tool(GetEventDetails),
             pydantic_function_tool(GetUserRegisteredEvents)
         ]
 

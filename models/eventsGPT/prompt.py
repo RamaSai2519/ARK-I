@@ -26,7 +26,7 @@ class EventsPrompt:
         doc = self.collection.find_one(query)
         prompt = doc.get('content')
 
-        prompt += "\nHere are the upcoming events:\n"
+        prompt += "\nHere are the upcoming events, all the timimgs of events below are in UTC, mention the timezone clearly in all your responses:\n"
         prompt += self.get_all_events()
         prompt = Common.strip_para(prompt)
 

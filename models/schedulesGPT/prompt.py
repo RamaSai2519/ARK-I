@@ -1,4 +1,5 @@
 from shared.db.chat import get_system_prompts_collection
+from shared.models.constants import TimeFormats
 from shared.models.interfaces import Output
 from shared.configs import CONFIG as config
 from shared.models.common import Common
@@ -35,7 +36,8 @@ class SchedulesPrompt:
         query = {'context': 'ark_schedule'}
         doc = self.collection.find_one(query)
         prompt = doc.get('content')
-
+        prompt += f'While dealing with date strings when you want to call functions, always use this format: {
+            TimeFormats.ANTD_TIME_FORMAT}.'
         prompt += f"\n\n# User's Upcoming Schedules\n{self.get_schedules()}"
         prompt = Common.strip_para(prompt)
 

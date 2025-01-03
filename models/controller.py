@@ -20,8 +20,8 @@ class Controller:
             ),
             'schedule': Model(
                 SchedulesPrompt(phoneNumber).get_system_message,
-                SchedulesTools().get_tools,
-                SchedulesTools().handle_function_call
+                SchedulesTools(phoneNumber, self).get_tools,
+                SchedulesTools(phoneNumber, self).handle_function_call
             ),
             'sukoon': Model(
                 SukoonPrompt().get_system_message,

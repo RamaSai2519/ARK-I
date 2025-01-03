@@ -22,7 +22,7 @@ class MainTools:
 
     def update_user(self, user: dict) -> dict:
         url = config.URL + '/actions/user'
-        user = Common.filter_none_values(user)
+        user = Common.filter_falsy_values(user)
         user['phoneNumber'] = self.phoneNumber
         response = requests.post(url, json=user)
         return response.json()

@@ -1,11 +1,13 @@
 from shared.models.interfaces import ChatInput as Input, Output
 from shared.db.chat import get_histories_collection
 from shared.helpers.openai import GPT_Client
+from shared.configs import CONFIG as config
 from models.main.prompt import MainPrompt
 from shared.models.common import Common
 from models.main.tools import MainTools
 from openai import RateLimitError
 from datetime import datetime
+import requests
 import time
 
 
@@ -107,6 +109,22 @@ class ARK:
         self.histories_collection.update_one({'_id': self.history_id}, update)
         return True
 
+    def send_reply(self, from_number: str, text: str) -> requests.Response:
+        url = config.WHATSAPP_API['URL']
+        payload = {
+            'messaging_product': 'whatsapp',
+            'to': from_number,
+            'text': {
+                'body': text.replace('**', '*')
+            }
+        }
+        token = config.WHATSAPP_API['ACCESS_TOKEN']
+        headers = {'Authorization': f'Bearer {token}'}
+        response = requests.post(url, headers=headers, json=payload)
+        print(response.text, 'reply')
+
+        return response
+
     def compute(self) -> Output:
         if self.check_to_serve() == False:
             return Output(output_message='Please wait for the assistant to respond.')
@@ -115,6 +133,9 @@ class ARK:
 
         self.update_history('assistant', response)
         self.save_history()
+
+        if self.input.send_reply == True:
+            self.send_reply(self.input.phoneNumber, response)
 
         return Output(
             output_details={

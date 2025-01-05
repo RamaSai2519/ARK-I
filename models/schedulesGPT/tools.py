@@ -46,10 +46,11 @@ class SchedulesTools:
         return [
             pydantic_function_tool(
                 CreateSchedule,
-                description=f'Make sure job_time is in the format {TimeFormats.ANTD_TIME_FORMAT} and is in UTC timezone and english only. If an invalid ID error is returned then ask the "ExpertsAssistant" for the correct `_id` by providing the expert name.'),
+                description=f"Make sure job_time is in the format {TimeFormats.ANTD_TIME_FORMAT} and is in UTC timezone and english only. If an invalid ID error is returned then ask the 'ExpertsAssistant' for the correct `_id` by providing the expert name."),
             pydantic_function_tool(
                 CancelSchedule, description='Pass the _id of the schedule to cancel it'),
-            pydantic_function_tool(GetCurrentTime)
+            pydantic_function_tool(GetCurrentTime),
+            pydantic_function_tool(ExpertsAssistant)
         ]
 
     def handle_function_call(self, function_name: str, arguments: str) -> str:
@@ -60,7 +61,8 @@ class SchedulesTools:
         function_map = {
             'GetCurrentTime': self.get_current_time,
             'CreateSchedule': lambda args: self.connect_later(args),
-            'CancelSchedule': lambda args: self.cancel_schedule(args.get('schedule_id'))
+            'CancelSchedule': lambda args: self.cancel_schedule(args.get('schedule_id')),
+            'ExpertsAssistant': lambda args: self.controller.invoke_sub_model('expert', args.get('prompt')),
         }
 
         arguments = json.loads(arguments) if arguments else {}

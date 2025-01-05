@@ -9,3 +9,7 @@ class CancelSchedule(BaseModel):
 class CreateSchedule(BaseModel):
     job_time: str
     expert_id: str
+
+
+class ExpertsAssistant(BaseModel):
+    prompt: str

@@ -37,12 +37,12 @@ class EventsTools:
 
     def handle_function_call(self, function_name: str, arguments: str) -> str:
         print(
-            f'Model: Events, Function name: {
-                function_name}, Arguments: {arguments}'
+            f'Model: Events, Function name: {function_name}, Arguments: {arguments}'
         )
         function_map = {
             "GetCurrentTime": self.get_current_time,
-            "GetUserRegisteredEvents": self.get_users_events
+            "GetUserRegisteredEvents": self.get_users_events,
+            "GetEventDetails": lambda args: self.get_event_details(args.get('source'))
         }
 
         arguments = json.loads(arguments) if arguments else {}

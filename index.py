@@ -128,7 +128,6 @@ class ARK:
     def compute(self) -> Output:
         if self.check_to_serve() == False:
             return Output(output_message='Please wait for the assistant to respond.')
-        time.sleep(30)
         self.update_history('user', self.input.prompt)
         response = self.get_gpt_response()
 

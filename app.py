@@ -1,9 +1,10 @@
 import json
+import threading
 from index import ARK
 from flask_cors import CORS
 from flask import Flask, request
 from flask_restful import Api, Resource
-from shared.models.interfaces import ChatInput
+from shared.models.interfaces import ChatInput, Output
 
 app = Flask(__name__)
 api = Api(app)
@@ -15,7 +16,12 @@ class ARKResource(Resource):
     def post(self) -> dict:
         input = json.loads(request.get_data())
         input = ChatInput(**input)
-        output = ARK(input).compute()
+        ark_obj = ARK(input)
+        if input.send_reply == True:
+            threading.Thread(target=ark_obj.compute).start()
+            output = Output(output_message="Ark is processing your request")
+        else:
+            output = ark_obj.compute()
 
         return output.__dict__
 

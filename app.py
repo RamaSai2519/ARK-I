@@ -15,6 +15,7 @@ class ARKResource(Resource):
 
     def post(self) -> dict:
         input = json.loads(request.get_data())
+        print(input, '__input__')
         input = ChatInput(**input)
         ark_obj = ARK(input)
         if input.send_reply == True:

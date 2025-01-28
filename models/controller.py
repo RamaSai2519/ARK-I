@@ -24,7 +24,7 @@ class Controller:
                 SchedulesTools(phoneNumber, self).handle_function_call
             ),
             'sukoon': Model(
-                SukoonPrompt().get_system_message,
+                SukoonPrompt(phoneNumber).get_system_message,
                 SukoonTools(phoneNumber, self).get_tools,
                 SukoonTools(phoneNumber, self).handle_function_call
             ),

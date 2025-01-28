@@ -8,6 +8,7 @@ import json
 
 class EventsPrompt:
     def __init__(self, phoneNumber: str) -> None:
+        self.common = Common()
         self.phoneNumber = phoneNumber
         self.collection = get_system_prompts_collection()
 
@@ -22,7 +23,8 @@ class EventsPrompt:
         return json.dumps(data)
 
     def get_system_message(self) -> str:
-        query = {'context': 'ark_event'}
+        context = self.common.get_beta_context(self.phoneNumber, 'ark_event')
+        query = {'context': context}
         doc = self.collection.find_one(query)
         prompt = doc.get('content')
 

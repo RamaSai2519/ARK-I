@@ -9,6 +9,7 @@ import json
 
 class ExpertsPrompt:
     def __init__(self, phoneNumber: str) -> None:
+        self.common = Common()
         self.phoneNumber = phoneNumber
         self.collection = get_system_prompts_collection()
         self.experts_collections = get_experts_collections()
@@ -33,7 +34,8 @@ class ExpertsPrompt:
         return experts
 
     def get_system_message(self) -> str:
-        query = {'context': 'ark_expert'}
+        context = self.common.get_beta_context(self.phoneNumber, 'ark_expert')
+        query = {'context': context}
         doc = self.collection.find_one(query)
         prompt = doc.get('content')
 

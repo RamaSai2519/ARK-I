@@ -37,7 +37,7 @@ class ARK:
         if history:
             return history['history'], history['_id'], history['history'][-1]['content']
 
-        system_message = MainPrompt().get_system_message()
+        system_message = MainPrompt(self.input.phoneNumber).get_system_message()
         default_history = [{"role": "system", "content": system_message}]
 
         insertion = self.histories_collection.insert_one(
@@ -127,6 +127,7 @@ class ARK:
 
     def compute(self) -> Output:
         if self.check_to_serve() == False:
+            self.send_reply(self.input.phoneNumber, 'Please wait.')
             return Output(output_message='Please wait for the assistant to respond.')
         self.update_history('user', self.input.prompt)
         response = self.get_gpt_response()

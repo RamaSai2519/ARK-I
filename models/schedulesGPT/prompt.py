@@ -9,6 +9,7 @@ import json
 
 class SchedulesPrompt:
     def __init__(self, phoneNumber: str) -> None:
+        self.common = Common()
         self.phoneNumber = phoneNumber
         self.collection = get_system_prompts_collection()
 
@@ -33,7 +34,9 @@ class SchedulesPrompt:
         return json.dumps(data)
 
     def get_system_message(self) -> str:
-        query = {'context': 'ark_schedule'}
+        context = self.common.get_beta_context(
+            self.phoneNumber, 'ark_schedule')
+        query = {'context': context}
         doc = self.collection.find_one(query)
         prompt = doc.get('content')
         prompt += f'While dealing with date strings when you want to call functions, always use this format: {

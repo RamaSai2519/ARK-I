@@ -39,6 +39,7 @@ class MainTools:
             pydantic_function_tool(ExpertsAssistant),
             pydantic_function_tool(NotifySupportTeam),
             pydantic_function_tool(ServicesAssistant),
+            pydantic_function_tool(PartnersAssistant),
             pydantic_function_tool(SchedulesAssistant),
             pydantic_function_tool(
                 UpdateUserDetails,
@@ -57,6 +58,7 @@ class MainTools:
             "NotifySupportTeam": lambda args: self.notify_support(args.get('details')),
             "ExpertsAssistant": lambda args: self.controller.invoke_sub_model('expert', args.get('prompt')),
             "ServicesAssistant": lambda args: self.controller.invoke_sub_model('sukoon', args.get('prompt')),
+            "PartnersAssistant": lambda args: self.controller.invoke_sub_model('partner', args.get('prompt')),
             "SchedulesAssistant": lambda args: self.controller.invoke_sub_model('schedule', args.get('prompt')),
         }
 

@@ -32,5 +32,9 @@ class SchedulesAssistant(BaseModel):
     prompt: str
 
 
+class PartnersAssistant(BaseModel):
+    prompt: str
+
+
 class NotifySupportTeam(BaseModel):
     details: str

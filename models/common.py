@@ -42,6 +42,7 @@ class CommonTools:
             '_id': user.get('_id', ''),
             'name': user.get('name', ''),
             'city': user.get('city', ''),
+            'refSource': user.get('refSource', ''),
             'persona': user.get('customerPersona', ''),
         }
         birthDate = user.get('birthDate')

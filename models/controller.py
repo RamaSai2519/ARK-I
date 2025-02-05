@@ -6,6 +6,8 @@ from models.eventsGPT.prompt import EventsPrompt
 from models.expertsGPT.tools import ExpertsTools
 from models.sukoonGPT.prompt import SukoonPrompt
 from models.expertsGPT.prompt import ExpertsPrompt
+from models.partnersGPT.tools import PartnersTools
+from models.partnersGPT.prompt import PartnersPrompt
 from models.schedulesGPT.tools import SchedulesTools
 from models.schedulesGPT.prompt import SchedulesPrompt
 
@@ -32,6 +34,11 @@ class Controller:
                 EventsPrompt(phoneNumber).get_system_message,
                 EventsTools(phoneNumber).get_tools,
                 EventsTools(phoneNumber).handle_function_call
+            ),
+            'partner': Model(
+                PartnersPrompt(phoneNumber).get_system_message,
+                PartnersTools(phoneNumber).get_tools,
+                PartnersTools(phoneNumber).handle_function_call
             )
         }
 

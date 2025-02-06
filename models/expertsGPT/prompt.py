@@ -16,7 +16,7 @@ class ExpertsPrompt:
 
     def get_all_experts(self) -> str:
         experts_helper = ExpertsHelper()
-        query = {'type': 'saarthi', 'active': True}
+        query = {'type': 'saarthi', 'active': True, 'isDeleted': False}
         data = experts_helper.get_experts(persona=True, query=query)
         experts = []
         for expert in data:

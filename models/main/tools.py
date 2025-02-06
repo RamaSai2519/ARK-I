@@ -25,6 +25,18 @@ class MainTools:
         response = requests.post(url, json=user)
         return response.json()
 
+    def get_previous_calls(self, count: int) -> dict:
+        url = config.URL + '/actions/call'
+        params = {
+            'size': count,
+            'dest': 'list',
+            'filter_field': 'user',
+            'filter_value': self.phoneNumber
+        }
+        response = requests.get(url, params=params)
+        output = response.json()
+        return output.get('output_details', {}).get('data', 'No calls done yet')
+
     def get_current_time(self, arguments: dict = None) -> str:
         return CommonTools.get_current_time()
 
@@ -37,6 +49,7 @@ class MainTools:
             pydantic_function_tool(GetUserDetails),
             pydantic_function_tool(GetCurrentTime),
             pydantic_function_tool(ExpertsAssistant),
+            pydantic_function_tool(GetPreviousCalls),
             pydantic_function_tool(NotifySupportTeam),
             pydantic_function_tool(ServicesAssistant),
             pydantic_function_tool(PartnersAssistant),
@@ -56,6 +69,7 @@ class MainTools:
             "GetUserDetails": self.get_user_details,
             "UpdateUserDetails": lambda args: self.update_user(args.get('user')),
             "NotifySupportTeam": lambda args: self.notify_support(args.get('details')),
+            "GetPreviousCalls": lambda args: self.get_previous_calls(int(args.get('count'))),
             "ExpertsAssistant": lambda args: self.controller.invoke_sub_model('expert', args.get('prompt')),
             "ServicesAssistant": lambda args: self.controller.invoke_sub_model('sukoon', args.get('prompt')),
             "PartnersAssistant": lambda args: self.controller.invoke_sub_model('partner', args.get('prompt')),

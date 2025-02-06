@@ -12,6 +12,10 @@ class User(BaseModel):
     customerPersona: Persona
 
 
+class GetPreviousCalls(BaseModel):
+    count: int
+
+
 class UpdateUserDetails(BaseModel):
     user: User
 

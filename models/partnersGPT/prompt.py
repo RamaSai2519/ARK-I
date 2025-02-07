@@ -10,7 +10,7 @@ class PartnersPrompt:
 
     def get_system_message(self) -> str:
         context = self.common.get_beta_context(
-            self.phoneNumber, 'ark_partners')
+            self.phoneNumber, 'ark_partner')
         query = {'context': context}
         doc = self.collection.find_one(query)
         prompt = doc.get('content')

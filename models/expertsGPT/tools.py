@@ -15,7 +15,7 @@ class ExpertsTools:
     def get_timings(self, expert_id: str, date: str) -> str:
         url = config.URL + '/actions/slots'
         payload = {
-            'date': date,
+            'datetime': date,
             'duration': 30,
             'expert': expert_id
         }

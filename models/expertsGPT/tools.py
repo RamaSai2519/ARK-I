@@ -56,7 +56,7 @@ class ExpertsTools:
         )
         function_map = {
             'GetCurrentTime': self.get_current_time,
-            'GetTimings': lambda args: self.get_timings(args.get('expertId')),
+            'GetTimings': lambda args: self.get_timings(args.get('expertId'), args.get('date')),
             'GetSarathiSchedules': lambda args: self.get_sarathi_schedules(args.get('expertName')),
         }
 

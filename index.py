@@ -5,8 +5,8 @@ from shared.configs import CONFIG as config
 from models.main.prompt import MainPrompt
 from shared.models.common import Common
 from models.main.tools import MainTools
-from openai import RateLimitError
 from datetime import datetime
+import traceback
 import requests
 import time
 
@@ -37,7 +37,8 @@ class ARK:
         if history:
             return history['history'], history['_id'], history['history'][-1]['content']
 
-        system_message = MainPrompt(self.input.phoneNumber).get_system_message()
+        system_message = MainPrompt(
+            self.input.phoneNumber).get_system_message()
         default_history = [{"role": "system", "content": system_message}]
 
         insertion = self.histories_collection.insert_one(
@@ -90,7 +91,8 @@ class ARK:
                             {'role': 'tool', 'content': tool_response, 'tool_call_id': tool_call.id, 'timestamp': Common.get_current_utc_time()})
                     continue
                 break
-            except RateLimitError:
+            except:
+                traceback.print_exc()
                 print('Rate limit error. Waiting for 5 seconds.')
                 errors += 1
                 if errors > 3:

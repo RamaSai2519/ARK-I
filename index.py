@@ -96,7 +96,6 @@ class ARK:
                 if errors > 3:
                     print('Truncating message history.')
                     self.truncate_history()
-                    continue
                 time.sleep(5)
         assistant_response = response.choices[0].message.content
         return assistant_response

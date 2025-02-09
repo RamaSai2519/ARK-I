@@ -24,6 +24,8 @@ class ExpertsTools:
         data = output.output_details
         if not data:
             return "No slots available, try another date"
+        for slot in data:
+            slot['slot'] = slot['slot'] + ' IST'
         return data
 
     def get_sarathi_schedules(self, expert_name: str) -> str:

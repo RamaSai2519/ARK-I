@@ -2,7 +2,8 @@ from pydantic import BaseModel
 from models.common_schemas import GetCurrentTime
 
 
-class GetTimings(BaseModel):
+class GetSlots(BaseModel):
+    date: str
     expertId: str
 
 

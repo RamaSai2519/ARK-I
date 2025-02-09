@@ -43,7 +43,7 @@ class ExpertsTools:
     def get_tools(self) -> list:
         return [
             pydantic_function_tool(GetSlots,
-                                   description=f'Gets the slots of an expert, the `date` should be in {TimeFormats.ANTD_TIME_FORMAT} format only'),
+                                   description=f'Gets the slots of an expert, the `date` should be in {TimeFormats.ANTD_TIME_FORMAT} format only. In each slot, the `slot` will refer to time in IST and `datetime` will refer to time in UTC. If the slot is not present or has `available` as `false`, then consider the expert as unavailable at that time.'),
             pydantic_function_tool(GetSarathiSchedules,
                                    description='Gets the upcoming schedules of a sarathi with UTC job_time'),
             pydantic_function_tool(GetCurrentTime)

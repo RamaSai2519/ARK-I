@@ -1,15 +1,15 @@
-from shared.helpers.openai import GPT_Client
+from shared.helpers.openai import GPT_Client, GPT2_Client
 from shared.models.interfaces import Model
 from shared.models.common import Common
 from openai import RateLimitError
-from pprint import pprint
-import time
 
 
 class Chat:
     def __init__(self, model: Model, prompt: str) -> None:
         self.model = model
         self.prompt = prompt
+        self.client_obj = GPT_Client()
+        self.client = self.client_obj.get_gpt_client()
         self.message_history = self.get_message_history()
 
     def update_history(self, role: str, content: str) -> None:
@@ -21,18 +21,16 @@ class Chat:
         return [{"role": "system", "content": self.model.prompt()}]
 
     def get_response(self) -> str:
-        client_obj = GPT_Client()
-        client = client_obj.get_gpt_client()
         tools = self.model.tools() if self.model.tools else None
         errors = 0
 
         while True:
             try:
                 if tools:
-                    response = client.chat.completions.create(
+                    response = self.client.chat.completions.create(
                         model='gpt-4o-2024-11-20', messages=self.message_history, tools=tools)
                 else:
-                    response = client.chat.completions.create(
+                    response = self.client.chat.completions.create(
                         model='gpt-4o-2024-11-20', messages=self.message_history)
                 tool_calls = response.choices[0].message.tool_calls
                 if tool_calls:
@@ -57,7 +55,8 @@ class Chat:
                 errors += 1
                 if errors > 3:
                     return "Rate limit error. Please try again later."
-                time.sleep(5)
+                self.client_obj = GPT2_Client()
+                self.client = self.client_obj.get_gpt_client()
         assistant_response = response.choices[0].message.content
         return assistant_response
 

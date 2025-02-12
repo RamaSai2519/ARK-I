@@ -1,6 +1,6 @@
 from shared.models.interfaces import ChatInput as Input, Output
+from shared.helpers.openai import GPT_Client, GPT2_Client
 from shared.db.chat import get_histories_collection
-from shared.helpers.openai import GPT_Client
 from shared.configs import CONFIG as config
 from models.main.prompt import MainPrompt
 from shared.models.common import Common
@@ -8,14 +8,15 @@ from models.main.tools import MainTools
 from datetime import datetime
 import traceback
 import requests
-import time
 
 
 class ARK:
     def __init__(self, input: Input) -> None:
         self.input = input
         self.common = Common()
+        self.client_obj = GPT_Client()
         self.now_date = self.get_now_date()
+        self.client = self.client_obj.get_gpt_client()
         self.tooler = MainTools(self.input.phoneNumber)
         self.histories_collection = get_histories_collection()
 
@@ -65,13 +66,11 @@ class ARK:
         self.message_history = history
 
     def get_gpt_response(self) -> str:
-        client_obj = GPT_Client()
-        client = client_obj.get_gpt_client()
         tools = self.tooler.get_tools()
         errors = 0
         while True:
             try:
-                response = client.chat.completions.create(
+                response = self.client.chat.completions.create(
                     model='gpt-4o-2024-11-20', messages=Common.jsonify(self.message_history), tools=tools)
                 tool_calls = response.choices[0].message.tool_calls
                 if tool_calls:
@@ -98,7 +97,8 @@ class ARK:
                 if errors > 3:
                     print('Truncating message history.')
                     self.truncate_history()
-                time.sleep(5)
+                self.client_obj = GPT2_Client()
+                self.client = self.client_obj.get_gpt_client()
         assistant_response = response.choices[0].message.content
         return assistant_response
 

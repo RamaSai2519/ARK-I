@@ -24,8 +24,6 @@ class SukoonTools:
         event = self.events_collection.find_one(query)
         if not event:
             return {'error': 'Invalid event slug, ask the "EventsandMeetupsAssistant" tool for valid event slug.'}
-        if event.get('isPremiumUserOnly', False) == True and not user.get('isPaidUser', False) == True:
-            return {'error': 'This event is a paid event. Ask "EventsandMeetupsAssistant" for the registration link and direct the user to the link.'}
         url = config.URL + '/actions/upsert_event_user'
         payload = {'phoneNumber': self.phone_number, 'source': slug}
         response = requests.post(url, json=payload)

@@ -51,7 +51,7 @@ class ARK:
             {"role": role, "content": content, "timestamp": Common.get_current_utc_time()})
         return self.message_history
 
-    def save_history(self) -> None:
+    def save_history(self, done: bool = True) -> None:
         update = {'$set': {'history': self.message_history,
                            'status': 'done', 'updatedAt': Common.get_current_utc_time()}}
         self.histories_collection.update_one({'_id': self.history_id}, update)
@@ -88,7 +88,7 @@ class ARK:
                             function_name, arguments)
                         self.message_history.append(
                             {'role': 'tool', 'content': tool_response, 'tool_call_id': tool_call.id, 'timestamp': Common.get_current_utc_time()})
-                        self.save_history()
+                        self.save_history(False)
                     continue
                 break
             except:

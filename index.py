@@ -52,8 +52,9 @@ class ARK:
         return self.message_history
 
     def save_history(self, done: bool = True) -> None:
+        status = 'inprogress' if done == False else 'done'
         update = {'$set': {'history': self.message_history,
-                           'status': 'done', 'updatedAt': Common.get_current_utc_time()}}
+                           'status': status, 'updatedAt': Common.get_current_utc_time()}}
         self.histories_collection.update_one({'_id': self.history_id}, update)
 
     def truncate_history(self) -> None:

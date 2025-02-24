@@ -81,6 +81,7 @@ class ARK:
                             for t in tool_calls
                         ],
                     })
+                    self.save_history(False)
                     for tool_call in tool_calls:
                         function_name = tool_call.function.name
                         arguments = tool_call.function.arguments

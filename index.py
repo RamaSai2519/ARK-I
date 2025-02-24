@@ -88,6 +88,7 @@ class ARK:
                             function_name, arguments)
                         self.message_history.append(
                             {'role': 'tool', 'content': tool_response, 'tool_call_id': tool_call.id, 'timestamp': Common.get_current_utc_time()})
+                        self.save_history()
                     continue
                 break
             except:

@@ -30,6 +30,8 @@ class Chat:
                     if call['function']['name'] == 'CreateSchedule':
                         tool_call_id = call['id']
                         for history_msg in self.message_history:
+                            if history_msg.get('tool_call_id') == tool_call_id and 'FAILURE' not in history_msg['content']:
+                                return False
                             if history_msg.get('tool_call_id') == tool_call_id and 'FAILURE' in history_msg['content']:
                                 prompt = 'Here is the history between main model(user) and sub-model(tool(SchedulesAssistant))'
                                 history = self.message_history[1:]

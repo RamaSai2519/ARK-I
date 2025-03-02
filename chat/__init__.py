@@ -1,13 +1,16 @@
 from shared.helpers.openai import GPT_Client, GPT2_Client
+from models.userGPT.prompt import UserPrompt
 from shared.models.interfaces import Model
 from shared.models.common import Common
 from openai import RateLimitError
+import json
 
 
 class Chat:
-    def __init__(self, model: Model, prompt: str) -> None:
+    def __init__(self, model: Model, prompt: str, controller) -> None:
         self.model = model
         self.prompt = prompt
+        self.controller = controller
         self.client_obj = GPT_Client()
         self.client = self.client_obj.get_gpt_client()
         self.message_history = self.get_message_history()
@@ -19,6 +22,35 @@ class Chat:
 
     def get_message_history(self) -> list[dict]:
         return [{"role": "system", "content": self.model.prompt()}]
+
+    def check_for_failed_tool(self) -> bool:
+        last_msg_index = len(self.message_history) - 1
+        if last_msg_index < 0:
+            return False
+        while True:
+            if self.message_history[last_msg_index]['role'] != 'assistant':
+                last_msg_index -= 1
+                if last_msg_index < 0:
+                    return False
+                continue
+            else:
+                break
+        last_assistant_msg = self.message_history[last_msg_index]
+        if 'tool_calls' in last_assistant_msg:
+            for call in last_assistant_msg['tool_calls']:
+                if call['function']['name'] == 'CreateSchedule':
+                    tool_call_id = call['id']
+                    for msg in self.message_history:
+                        if 'tool_call_id' in msg and msg['tool_call_id'] == tool_call_id:
+                            tool_output = msg['content']
+                            if 'FAILURE' in tool_output:
+                                prompt = 'Here is the history between main model(user) and sub-model(tool(SchedulesAssistant))'
+                                prompt += f'\n{json.dumps(self.message_history)}'
+                                user_prompt = self.controller.invoke_sub_model(
+                                    'user', prompt)
+                                self.update_history('user', user_prompt)
+                                return True
+        return False
 
     def get_response(self) -> str:
         tools = self.model.tools() if self.model.tools else None
@@ -48,6 +80,8 @@ class Chat:
                             function_name, arguments)
                         self.message_history.append(
                             {'role': 'tool', 'content': tool_response, 'tool_call_id': tool_call.id, 'timestamp': Common.get_current_utc_time().strftime('%Y-%m-%d %H:%M:%S')})
+                    continue
+                if self.check_for_failed_tool():
                     continue
                 break
             except RateLimitError:

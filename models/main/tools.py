@@ -13,7 +13,6 @@ from shared.models.constants import TimeFormats
 class MainTools:
     def __init__(self, phoneNumber: str) -> None:
         self.phoneNumber = phoneNumber
-        self.controller = Controller(self.phoneNumber)
 
     def get_user_details(self, arguments: dict = None) -> dict:
         return CommonTools.get_user_details(self.phoneNumber)
@@ -59,7 +58,8 @@ class MainTools:
                 description=f"Make sure birthDate is in the format {TimeFormats.ANTD_TIME_FORMAT} and is in english only."),
         ]
 
-    def handle_function_call(self, function_name: str, arguments: str) -> str:
+    def handle_function_call(self, function_name: str, arguments: str, history: list[dict]) -> str:
+        self.controller = Controller(self.phoneNumber, history)
         print(
             f'Model: Main, Function name: {
                 function_name}, Arguments: {arguments}'

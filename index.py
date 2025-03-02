@@ -87,7 +87,7 @@ class ARK:
                         function_name = tool_call.function.name
                         arguments = tool_call.function.arguments
                         tool_response = self.tooler.handle_function_call(
-                            function_name, arguments)
+                            function_name, arguments, self.message_history)
                         self.message_history.append(
                             {'role': 'tool', 'content': tool_response, 'tool_call_id': tool_call.id, 'timestamp': Common.get_current_utc_time()})
                         self.save_history(False)

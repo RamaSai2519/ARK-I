@@ -36,6 +36,17 @@ class Chat:
             else:
                 break
         last_assistant_msg = self.message_history[last_msg_index]
+        if 'tool_calls' not in last_assistant_msg:
+            last_msg_index -= 1
+            while True:
+                if self.message_history[last_msg_index]['role'] != 'assistant':
+                    last_msg_index -= 1
+                    if last_msg_index < 0:
+                        return False
+                    continue
+                else:
+                    break
+        last_assistant_msg = self.message_history[last_msg_index]
         if 'tool_calls' in last_assistant_msg:
             for call in last_assistant_msg['tool_calls']:
                 if call['function']['name'] == 'CreateSchedule':
@@ -45,7 +56,8 @@ class Chat:
                             tool_output = msg['content']
                             if 'FAILURE' in tool_output:
                                 prompt = 'Here is the history between main model(user) and sub-model(tool(SchedulesAssistant))'
-                                prompt += f'\n{json.dumps(self.message_history)}'
+                                history = self.message_history[1:]
+                                prompt += f'\n{json.dumps(history)}'
                                 user_prompt = self.controller.invoke_sub_model(
                                     'user', prompt)
                                 self.update_history('user', user_prompt)
@@ -80,7 +92,11 @@ class Chat:
                             function_name, arguments)
                         self.message_history.append(
                             {'role': 'tool', 'content': tool_response, 'tool_call_id': tool_call.id, 'timestamp': Common.get_current_utc_time().strftime('%Y-%m-%d %H:%M:%S')})
-                    continue
+                        if function_name == 'CreateSchedule' and 'FAILURE' in tool_response:
+                            self.update_history(
+                                'assistant', 'There was an error creating the schedule. See the history for more information.')
+                    if self.message_history[-1]['role'] == 'tool':
+                        continue
                 if self.check_for_failed_tool():
                     continue
                 break

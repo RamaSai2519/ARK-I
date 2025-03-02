@@ -24,37 +24,13 @@ class Chat:
         return [{"role": "system", "content": self.model.prompt()}]
 
     def check_for_failed_tool(self) -> bool:
-        last_msg_index = len(self.message_history) - 1
-        if last_msg_index < 0:
-            return False
-        while True:
-            if self.message_history[last_msg_index]['role'] != 'assistant':
-                last_msg_index -= 1
-                if last_msg_index < 0:
-                    return False
-                continue
-            else:
-                break
-        last_assistant_msg = self.message_history[last_msg_index]
-        if 'tool_calls' not in last_assistant_msg:
-            last_msg_index -= 1
-            while True:
-                if self.message_history[last_msg_index]['role'] != 'assistant':
-                    last_msg_index -= 1
-                    if last_msg_index < 0:
-                        return False
-                    continue
-                else:
-                    break
-        last_assistant_msg = self.message_history[last_msg_index]
-        if 'tool_calls' in last_assistant_msg:
-            for call in last_assistant_msg['tool_calls']:
-                if call['function']['name'] == 'CreateSchedule':
-                    tool_call_id = call['id']
-                    for msg in self.message_history:
-                        if 'tool_call_id' in msg and msg['tool_call_id'] == tool_call_id:
-                            tool_output = msg['content']
-                            if 'FAILURE' in tool_output:
+        for msg in reversed(self.message_history):
+            if msg['role'] == 'assistant' and 'tool_calls' in msg:
+                for call in msg['tool_calls']:
+                    if call['function']['name'] == 'CreateSchedule':
+                        tool_call_id = call['id']
+                        for history_msg in self.message_history:
+                            if history_msg.get('tool_call_id') == tool_call_id and 'FAILURE' in history_msg['content']:
                                 prompt = 'Here is the history between main model(user) and sub-model(tool(SchedulesAssistant))'
                                 history = self.message_history[1:]
                                 prompt += f'\n{json.dumps(history)}'

@@ -5,6 +5,7 @@ from shared.configs import CONFIG as config
 from models.main.prompt import MainPrompt
 from shared.models.common import Common
 from models.main.tools import MainTools
+from openai import RateLimitError
 from datetime import datetime
 import traceback
 import requests
@@ -93,7 +94,7 @@ class ARK:
                         self.save_history(False)
                     continue
                 break
-            except:
+            except RateLimitError:
                 traceback.print_exc()
                 print('Rate limit error. Waiting for 5 seconds.')
                 errors += 1
@@ -102,6 +103,10 @@ class ARK:
                     self.truncate_history()
                 self.client_obj = GPT2_Client()
                 self.client = self.client_obj.get_gpt_client()
+            except Exception as e:
+                traceback.print_exc()
+                print('An error occured. Truncating message history.')
+                return 'An error occured. Please try again.'
         assistant_response = response.choices[0].message.content
         return assistant_response
 

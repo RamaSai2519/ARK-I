@@ -1,6 +1,8 @@
 import json
 import requests
 from .tools_schemas import *
+from models.common import CommonTools
+from shared.models.common import Common
 from openai import pydantic_function_tool
 from shared.configs import CONFIG as config
 from shared.db.users import get_user_collection
@@ -13,6 +15,7 @@ class SukoonTools:
         self.phone_number = phoneNumber
         self.users_collection = get_user_collection()
         self.events_collection = get_events_collection()
+        self.user = CommonTools.get_user_details(phoneNumber)
 
     def get_user(self) -> dict:
         query = {'phoneNumber': self.phone_number}
@@ -25,8 +28,10 @@ class SukoonTools:
         if not event:
             return {'error': 'Invalid event slug, ask the "EventsandMeetupsAssistant" tool for valid event slug.'}
         url = config.URL + '/actions/upsert_event_user'
+        token = Common.get_token(self.user.get('_id'), 'free_events')
+        headers = {'Authorization': f'Bearer {token}'}
         payload = {'phoneNumber': self.phone_number, 'source': slug}
-        response = requests.post(url, json=payload)
+        response = requests.post(url, json=payload, headers=headers)
         return response.json()
 
     def get_tools(self) -> list:

@@ -3,6 +3,7 @@ import requests
 from .tools_schemas import *
 from datetime import datetime
 from models.common import CommonTools
+from shared.models.common import Common
 from openai import pydantic_function_tool
 from shared.configs import CONFIG as config
 from shared.models.constants import TimeFormats
@@ -10,6 +11,7 @@ from shared.models.constants import TimeFormats
 
 class SchedulesTools:
     def __init__(self, phoneNumber: str, controller) -> None:
+        self.common = Common()
         self.controller = controller
         self.phone_number = phoneNumber
         self.user = CommonTools.get_user_details(phoneNumber)
@@ -36,7 +38,11 @@ class SchedulesTools:
             'expert_id': arguments.get('expert_id'),
             'job_time': job_time.strftime(TimeFormats.AWS_TIME_FORMAT)
         }
-        response = requests.post(url, json=payload)
+
+        balance = self.common.get_balance_type(arguments.get('expert_id'))
+        token = Common.get_token(self.user.get('_id'), balance)
+        headers = {'Authorization': f'Bearer {token}'}
+        response = requests.post(url, json=payload, headers=headers)
         return response.json()
 
     def get_current_time(self, arguments: dict = None) -> str:

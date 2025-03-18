@@ -22,7 +22,6 @@ class SukoonTools:
         return self.users_collection.find_one(query)
 
     def register_user_for_event(self, slug: str) -> dict:
-        user = self.get_user()
         query = {'slug': slug}
         event = self.events_collection.find_one(query)
         if not event:
@@ -30,7 +29,8 @@ class SukoonTools:
         url = config.URL + '/actions/upsert_event_user'
         token = Common.get_token(self.user.get('_id'), 'free_events')
         headers = {'Authorization': f'Bearer {token}'}
-        payload = {'phoneNumber': self.phone_number, 'source': slug}
+        payload = {'phoneNumber': self.phone_number,
+                   'source': slug, 'initFrom': 'ARK'}
         response = requests.post(url, json=payload, headers=headers)
         return response.json()
 

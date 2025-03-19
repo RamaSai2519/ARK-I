@@ -105,6 +105,7 @@ class ARK:
                 self.client = self.client_obj.get_gpt_client()
             except Exception as e:
                 traceback.print_exc()
+                Common.log(str(self.history_id), traceback.format_exc())
                 print('An error occured. Truncating message history.')
                 return 'An error occured. Please try again.'
         assistant_response = response.choices[0].message.content

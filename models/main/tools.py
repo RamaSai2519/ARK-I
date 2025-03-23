@@ -18,6 +18,8 @@ class MainTools:
         return CommonTools.get_user_details(self.phoneNumber)
 
     def update_user(self, user: dict) -> dict:
+        if user is None:
+            return {"error": "User data is required"}
         url = config.URL + '/actions/user'
         user = Common.filter_falsy_values(user)
         user['phoneNumber'] = self.phoneNumber
@@ -61,8 +63,7 @@ class MainTools:
     def handle_function_call(self, function_name: str, arguments: str, history: list[dict]) -> str:
         self.controller = Controller(self.phoneNumber, history)
         print(
-            f'Model: Main, Function name: {
-                function_name}, Arguments: {arguments}'
+            f'Model: Main, Function name: {function_name}, Arguments: {arguments}'
         )
         function_map = {
             "GetCurrentTime": self.get_current_time,

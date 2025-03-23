@@ -1,5 +1,6 @@
 import json
 import requests
+from bson import ObjectId
 from .tools_schemas import *
 from datetime import datetime
 from models.common import CommonTools
@@ -23,6 +24,11 @@ class SchedulesTools:
         return response.json()
 
     def connect_later(self, arguments: dict) -> dict:
+        try:
+            ObjectId(arguments.get('expert_id'))
+        except Exception as e:
+            return str(e)
+
         url = config.URL + '/actions/schedules'
         job_time = datetime.strptime(arguments.get(
             'job_time'), TimeFormats.ANTD_TIME_FORMAT)
